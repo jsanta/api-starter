@@ -1,0 +1,37 @@
+{
+  "name": "apistarter",
+  "version": "0.0.1",
+  "description": "API starter project",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/jsanta/API-starter.git"
+  },
+  "keywords": [
+    "node",
+    "javascript",
+    "api",
+    "starter",
+    "project",
+    "best",
+    "practices",
+    "express"
+  ],
+  "author": "Jose Ignacio Santa Cruz G <j@santa.cl>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jsanta/API-starter/issues"
+  },
+  "homepage": "https://github.com/jsanta/API-starter#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "compression": "^1.7.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
+    "mysql2": "^1.5.3",
+    "sequelize": "^4.37.6"
+  }
+}
