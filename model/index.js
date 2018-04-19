@@ -2,9 +2,14 @@
 /**
  * Se importan los modulos con la configuración del sistema, y acceso a base de datos
  */
-const dbConfig = require('../config/dbConfig');
-const config    = require('../config/config');
+const dbConfig   = require('../config/dbConfig');
+const config     = require('../config/config');
 const sequelize = dbConfig.sequelize;
+
+/**
+ * Se importa modulo de carga masiva inicial de datos.
+ */
+const dataLoader = require('../data/dataLoader');
 
 /**
  * Se importan los objetos del Modelo.
@@ -35,8 +40,16 @@ module.exports = () => {
                 alter: true
             }).then(() => {
                 console.log('All tables synced');
+
+                /**
+                 * La carga inicial de datos se realizará cuando se ahya termiando de
+                 * sincronizar el modelo. Esta carga debiera estar condicionada por una variable
+                 * de ambiente o de configuracion
+                 */
+                dataLoader();
             }).catch((error) => {
                 console.error('ERROR syncing tables: ', error);
             });
         });
 };
+

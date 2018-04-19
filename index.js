@@ -9,10 +9,12 @@
  * - express: permite definir los endpoints de la aplicación
  * - cors: permite que los endpoints de la API sean accesibles desde servidores externos
  * - bodyparser: simplifica el rescate de parametros de los endpoints de la API
+ * - router: encargado de la gestión de rutas (endpoints) de la aplicación
  */
 const express    = require('express');
 const cors       = require('cors');
 const bodyParser = require('body-parser');
+const router     = express.Router();
 
 /**
  * Permite una configuración bajo la cual los paquetes transferidos DESDE el servidor vayan
@@ -75,13 +77,19 @@ const port      = config.APP_PORT;
 app.set('port', port);
 
 /**
+ * Inicializa el modelo de la base de datos y realiza la carga inicial de datos
+ * (si es necesario)
+ */
+const initDB = require('./model');
+initDB();
+
+/**
  * AQUI SE DEFINE LA API
  * Esta definición puede ser directamente en esta sección, pero si la API comenzara a crecer, el archivo
  * también crecerá proporcionalmente. Para efectos de mantención y separación de responsabilidades es mejor
  * manejar la lógica de la API en archivos separados.
  */
-const initDB = require('./model');
-initDB();
+app.use('/api', require('./api/companyApi')(router));
 
 /**
  * Se define y ejecuta el servidor HTTP con la aplicación Express.
@@ -91,5 +99,9 @@ initDB();
 const server = http.listen(app.get('port'), ipAddress, () => {
     console.log('Server started on localhost:' + port + '; Press Ctrl-C to terminate.');
     console.log('Application worker ', process.pid, ' started...');
+
+    const routeList = require('./utils/routeList');
+    routeList(app._router && app._router.stack);
+
 });
 

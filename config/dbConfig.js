@@ -21,7 +21,8 @@ const dbConfig = {
     'username':       config.DB_USER || 'root',
     'password':       config.DB_PWD || 'mysqlR00T',
     'database':       config.DB_DATABASE || 'api_starter',
-    'timezone':       'America/Santiago',
+    'timezone': 'America/Santiago',
+    logging: false,
     pool: {
         max:  3,
         min:  1,

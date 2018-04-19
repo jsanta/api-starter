@@ -1,4 +1,8 @@
 // jshint esversion: 6
+/**
+ * Importa el modulo asociado al objeto correspondiente a la tabla Company en la base de datos
+ */
+const Company = require('./Company').Company;
 
 /**
  * Se define el objeto JSON companyService, que será expuesto (module.exports) como servicio,
@@ -19,10 +23,8 @@ let companyService = {};
  */
 companyService.retrieveCompanies = () => {
     console.log('companyService.retrieveCompanies');
-    let companyList = [];
     // Operacion de rescate contra el ORM
-
-    return companyList;
+    return Company.findAll();
 };
 
 /**
@@ -32,14 +34,19 @@ companyService.retrieveCompanies = () => {
  */
 companyService.retrieveCompany = (companyId) => {
     console.log(`companyService.retrieveCompany[${companyId}]`);
-    let company = {};
-
+    let operationResult = {
+        status: false,
+        statusText: 'ERROR',
+        statusCode: 400, // Bad Request
+        msg: 'Debe indicar un ID válido para realizar la búsqueda'
+    };
     // Sólo realizará la operación en caso de tener un identificador para el registro
     if (companyId) {
         // Realiza el rescate contra el ORM
         console.log(`Rescatando compañía[${companyId}]`);
+        return Company.findById(companyId);
     }
-    return company;
+    return Promise.reject(operationResult);
 };
 
 /**
@@ -51,21 +58,20 @@ companyService.retrieveCompany = (companyId) => {
  */
 companyService.createCompany = (companyObj) => {
     console.log(`companyService.createCompany: ${JSON.stringify(companyObj)}`);
-    let operationResult = {};
+    let operationResult = {
+        status: false,
+        statusText: 'ERROR',
+        statusCode: 400, // Bad Request
+        msg: 'No se puede operar con objetos vacíos.'
+    };
 
     // Se valida que se entregue el objeto companyObj como parámetro
     if (companyObj) {
         // Realiza la creación contra el ORM
         console.log(`Creando compañía: ${JSON.stringify(companyObj)}`);
-    } else {
-        operationResult = {
-            status: false,
-            statusText: 'ERROR',
-            statusCode: 400, // Bad Request
-            msg: 'No se puede operar con objetos vacíos.'
-        };
+        return Company.create(companyObj);
     }
-    return operationResult;
+    return Promise.reject(operationResult);
 };
 
 /**
@@ -81,23 +87,25 @@ companyService.modifyCompany = (companyObj, companyId) => {
     console.log(`companyService.modifyCompany: ${JSON.stringify(companyObj)}`);
     // Si no viene el parametro companyId tratará de sacarlo desde el objeto
     companyId = (!companyId) ? companyObj.id : companyId;
-    let operationResult = {};
+    let operationResult = {
+        status: false,
+        statusText: 'ERROR',
+        statusCode: 400, // Bad Request
+        msg: 'No se puede determinar sobre que registro operar.'
+    };
 
     // Sólo realizará la operación en caso de tener un identificador para el registro
     // Se valida además que se entregue el objeto companyObj como parámetro
     if (companyObj && companyId) {
         // Realiza la actualización contra el ORM
         console.log(`Actualizando compañía[${companyId}]`);
-    } else {
-        operationResult = {
-            status: false,
-            statusText: 'ERROR',
-            statusCode: 400, // Bad Request
-            msg: 'No se puede determinar sobre que registro operar.'
-        };
+        return Company.update(companyObj, {
+            where: {
+                id: companyId
+            }
+        });
     }
-
-    return operationResult;
+    return Promise.reject(operationResult);
 };
 
 /**
@@ -107,22 +115,24 @@ companyService.modifyCompany = (companyObj, companyId) => {
  */
 companyService.removeCompany = (companyId) => {
     console.log(`companyService.removeCompany[${companyId}]`);
-    let operationResult = {};
+    let operationResult = {
+        status: false,
+        statusText: 'ERROR',
+        statusCode: 400, // Bad Request
+        msg: 'No se puede determinar sobre que registro operar.'
+    };
 
     // Sólo realizará la operación en caso de tener un identificador para el registro
     if (companyId) {
         // Realiza la eliminación contra el ORM
         console.log(`Eliminando compañía[${companyId}]`);
-    } else {
-        operationResult = {
-            status: false,
-            statusText: 'ERROR',
-            statusCode: 400, // Bad Request
-            msg: 'No se puede determinar sobre que registro operar.'
-        };
+        return Company.destroy({
+            where: {
+                id: companyId
+            }
+        });
     }
-
-    return operationResult;
+    return Promise.reject(operationResult);
 };
 
 /**
@@ -130,7 +140,5 @@ companyService.removeCompany = (companyId) => {
  * Si hubiera operaciones donde intervienen distintos objetos, los métodos deben ir en el servicio del
  * objeto "dominante" o más importante dentro de la consulta.
  */
-
-
 
 module.exports = companyService;
