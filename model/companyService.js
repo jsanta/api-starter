@@ -100,6 +100,8 @@ companyService.modifyCompany = (companyObj, companyId) => {
         // Realiza la actualización contra el ORM
         console.log(`Actualizando compañía[${companyId}]`);
         return Company.update(companyObj, {
+            returning: true, // Solo soportado por PostgreSQL
+            plain: true,
             where: {
                 id: companyId
             }

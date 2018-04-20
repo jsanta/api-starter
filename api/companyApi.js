@@ -51,12 +51,13 @@ module.exports = (router) => {
 
     router.put('/company/:companyId', (req, res) => {
         const companyId = req.params.companyId;
-        const company   = req.body;
+        const company = req.body;
         console.log(`PUT /company/${companyId}`, company);
 
         /**
          * Intenta actualizar el registro y devuelve el registro modificado
          * desde la base de datos.
+         * Ref.: https://medium.com/@sarahdherr/sequelizes-update-method-example-included-39dfed6821d
          */
         companyService.modifyCompany(company, companyId)
             .then(() => companyService.retrieveCompany(companyId))
